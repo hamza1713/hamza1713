@@ -37,12 +37,12 @@ Document Q&A + SQL analytics over enterprise data, gated by role-based access co
 5 specialized CrewAI agents (strategy, copywriting, review, engagement, analytics) running as a sequential pipeline that automates a full social campaign workflow. *(Final Year Project)*
 `CrewAI` `Python` `Streamlit` `Gemini`
 
-**📰 [Factscope-AI](https://factscope-ai.vercel.app)** — AI Claim Verification App · [Live Demo ↗](https://factscope-ai.vercel.app)
+**📰 [Factscope-AI](https://github.com/hamza1713/Factscope-AI)** — AI Claim Verification App
 Desktop + web app that verifies news credibility with a 3-tier AI fallback engine and search-grounded fact-checking, so it stays available even when a primary model call fails.
 `Electron` `React` `Express` `TypeScript` `Gemini`
 
-**🕵️ [Deep-Fake Detection](https://deep-fake-detection-pi.vercel.app)** — Multimodal AI App · [Live Demo ↗](https://deep-fake-detection-pi.vercel.app)
-Uses Gemini's multimodal reasoning to flag AI-generated or manipulated media — a deployed, practical application of multimodal AI for content authenticity.
+**🕵️ [Deep-Fake Detection](https://github.com/hamza1713/Deep-Fake-Detection)** — Multimodal AI App
+Uses Gemini's multimodal reasoning to flag AI-generated or manipulated media — a practical application of multimodal AI for content authenticity.
 `React` `TypeScript` `Vite` `Gemini`
 
 <details>
