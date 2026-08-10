@@ -1,7 +1,7 @@
 <div align="center">
 
 <h1>Hi, I'm Hamza Ali 👋</h1>
-<h3>GenAI / AI Engineer — RAG Systems · LLM Agents · Applied LLM Engineering</h3>
+<h3>AI/ML Engineer | Generative AI | RAG | LLM Agents</h3>
 
 <p>
 <img src="https://img.shields.io/badge/Open_to-GenAI_%2F_AI_Engineer_Roles-success?style=for-the-badge" />
