@@ -140,12 +140,97 @@ More ways I explore agents, multimodal AI, machine learning, and product deliver
 
 ## Toolkit
 
-| Layer | Technologies I use in these projects |
-| :--- | :--- |
-| **AI systems** | CrewAI · LangChain · Gemini · RAG · structured outputs · evaluation |
-| **Backend & data** | Python · FastAPI · Express · ChromaDB · DuckDB · SQLite |
-| **Interfaces & delivery** | React · TypeScript · Tailwind CSS · Electron · Docker · Vercel |
-| **ML foundations** | pandas · NumPy · scikit-learn · XGBoost · Jupyter |
+**Click any badge to see where I use it.** Expand a category to explore the stack behind my projects.
+
+<details open>
+<summary><b>Languages</b></summary>
+
+The languages behind my APIs, interfaces, and data workflows.
+
+<p>
+  <a href="https://github.com/hamza1713/AI-Code-Review-Agent"><img alt="Python — explore project" title="Python: see it in my work" src="https://img.shields.io/badge/Python-183B33?style=for-the-badge&amp;logo=python&amp;logoColor=FFD43B" height="28"></a>
+  <a href="https://github.com/hamza1713/Portfolio"><img alt="TypeScript — explore project" title="TypeScript: see it in my work" src="https://img.shields.io/badge/TypeScript-183B33?style=for-the-badge&amp;logo=typescript&amp;logoColor=76B7FF" height="28"></a>
+  <a href="https://github.com/hamza1713/Factscope-AI"><img alt="JavaScript — explore project" title="JavaScript: see it in my work" src="https://img.shields.io/badge/JavaScript-183B33?style=for-the-badge&amp;logo=javascript&amp;logoColor=F7DF1E" height="28"></a>
+  <a href="https://github.com/hamza1713/Enterprise-RAG-Chatbot-with-Role-Base-Access-Control-"><img alt="SQL — explore project" title="SQL: see it in my work" src="https://img.shields.io/badge/SQL-183B33?style=for-the-badge" height="28"></a>
+  <a href="https://github.com/hamza1713/Portfolio/blob/main/client/index.html"><img alt="HTML5 — explore project" title="HTML5: see it in my work" src="https://img.shields.io/badge/HTML5-183B33?style=for-the-badge&amp;logo=html5&amp;logoColor=FF906B" height="28"></a>
+  <a href="https://github.com/hamza1713/Portfolio/blob/main/client/src/index.css"><img alt="CSS3 — explore project" title="CSS3: see it in my work" src="https://img.shields.io/badge/CSS3-183B33?style=for-the-badge&amp;logo=css&amp;logoColor=BBA7FF" height="28"></a>
+</p>
+
+</details>
+
+<details open>
+<summary><b>AI & agent engineering</b></summary>
+
+Agent orchestration, retrieval workflows, and model integration.
+
+<p>
+  <a href="https://github.com/hamza1713/Autonomous-Social-Media-Brand-Manager"><img alt="CrewAI — explore project" title="CrewAI: see it in my work" src="https://img.shields.io/badge/CrewAI-183B33?style=for-the-badge" height="28"></a>
+  <a href="https://github.com/hamza1713/Enterprise-RAG-Chatbot-with-Role-Base-Access-Control-"><img alt="LangChain — explore project" title="LangChain: see it in my work" src="https://img.shields.io/badge/LangChain-183B33?style=for-the-badge&amp;logo=langchain&amp;logoColor=CEF47D" height="28"></a>
+  <a href="https://github.com/hamza1713/Factscope-AI"><img alt="Gemini — explore project" title="Gemini: see it in my work" src="https://img.shields.io/badge/Gemini-183B33?style=for-the-badge&amp;logo=googlegemini&amp;logoColor=86D9E3" height="28"></a>
+  <a href="https://github.com/hamza1713/Enterprise-RAG-Chatbot-with-Role-Base-Access-Control-"><img alt="RAG — explore project" title="RAG: see it in my work" src="https://img.shields.io/badge/RAG-183B33?style=for-the-badge" height="28"></a>
+</p>
+
+</details>
+
+<details>
+<summary><b>Frontend & application frameworks</b></summary>
+
+Interfaces for exploring AI results on the web and desktop.
+
+<p>
+  <a href="https://github.com/hamza1713/Portfolio"><img alt="React — explore project" title="React: see it in my work" src="https://img.shields.io/badge/React-183B33?style=for-the-badge&amp;logo=react&amp;logoColor=61DAFB" height="28"></a>
+  <a href="https://github.com/hamza1713/Portfolio"><img alt="Tailwind CSS — explore project" title="Tailwind CSS: see it in my work" src="https://img.shields.io/badge/Tailwind%20CSS-183B33?style=for-the-badge&amp;logo=tailwindcss&amp;logoColor=38BDF8" height="28"></a>
+  <a href="https://github.com/hamza1713/Portfolio"><img alt="Vite — explore project" title="Vite: see it in my work" src="https://img.shields.io/badge/Vite-183B33?style=for-the-badge&amp;logo=vite&amp;logoColor=C4A5FF" height="28"></a>
+  <a href="https://github.com/hamza1713/Factscope-AI/tree/main/electron"><img alt="Electron — explore project" title="Electron: see it in my work" src="https://img.shields.io/badge/Electron-183B33?style=for-the-badge&amp;logo=electron&amp;logoColor=9FEAF9" height="28"></a>
+  <a href="https://github.com/hamza1713/AI-Code-Review-Agent"><img alt="FastAPI — explore project" title="FastAPI: see it in my work" src="https://img.shields.io/badge/FastAPI-183B33?style=for-the-badge&amp;logo=fastapi&amp;logoColor=6BE5C3" height="28"></a>
+  <a href="https://github.com/hamza1713/Portfolio"><img alt="Node.js — explore project" title="Node.js: see it in my work" src="https://img.shields.io/badge/Node.js-183B33?style=for-the-badge&amp;logo=nodedotjs&amp;logoColor=8DD58A" height="28"></a>
+  <a href="https://github.com/hamza1713/Factscope-AI"><img alt="Express — explore project" title="Express: see it in my work" src="https://img.shields.io/badge/Express-183B33?style=for-the-badge&amp;logo=express&amp;logoColor=FFFFFF" height="28"></a>
+</p>
+
+</details>
+
+<details>
+<summary><b>Databases & retrieval</b></summary>
+
+Structured storage, analytical queries, and vector search.
+
+<p>
+  <a href="https://github.com/hamza1713/Enterprise-RAG-Chatbot-with-Role-Base-Access-Control-"><img alt="ChromaDB — explore project" title="ChromaDB: see it in my work" src="https://img.shields.io/badge/ChromaDB-183B33?style=for-the-badge" height="28"></a>
+  <a href="https://github.com/hamza1713/Enterprise-RAG-Chatbot-with-Role-Base-Access-Control-"><img alt="DuckDB — explore project" title="DuckDB: see it in my work" src="https://img.shields.io/badge/DuckDB-183B33?style=for-the-badge&amp;logo=duckdb&amp;logoColor=FFF000" height="28"></a>
+  <a href="https://github.com/hamza1713/AI-Code-Review-Agent"><img alt="SQLite — explore project" title="SQLite: see it in my work" src="https://img.shields.io/badge/SQLite-183B33?style=for-the-badge&amp;logo=sqlite&amp;logoColor=86D9E3" height="28"></a>
+</p>
+
+</details>
+
+<details>
+<summary><b>Data science & machine learning</b></summary>
+
+Data preparation, model tuning, and evaluation in my airline satisfaction project.
+
+<p>
+  <a href="https://github.com/hamza1713/DS-ML-PROJECTS"><img alt="pandas — explore project" title="pandas: see it in my work" src="https://img.shields.io/badge/pandas-183B33?style=for-the-badge&amp;logo=pandas&amp;logoColor=C4A5FF" height="28"></a>
+  <a href="https://github.com/hamza1713/DS-ML-PROJECTS"><img alt="NumPy — explore project" title="NumPy: see it in my work" src="https://img.shields.io/badge/NumPy-183B33?style=for-the-badge&amp;logo=numpy&amp;logoColor=86D9E3" height="28"></a>
+  <a href="https://github.com/hamza1713/DS-ML-PROJECTS"><img alt="scikit-learn — explore project" title="scikit-learn: see it in my work" src="https://img.shields.io/badge/scikit--learn-183B33?style=for-the-badge&amp;logo=scikitlearn&amp;logoColor=F5AD62" height="28"></a>
+  <a href="https://github.com/hamza1713/DS-ML-PROJECTS"><img alt="XGBoost — explore project" title="XGBoost: see it in my work" src="https://img.shields.io/badge/XGBoost-183B33?style=for-the-badge" height="28"></a>
+  <a href="https://github.com/hamza1713/DS-ML-PROJECTS"><img alt="Jupyter — explore project" title="Jupyter: see it in my work" src="https://img.shields.io/badge/Jupyter-183B33?style=for-the-badge&amp;logo=jupyter&amp;logoColor=F5AD62" height="28"></a>
+</p>
+
+</details>
+
+<details>
+<summary><b>Developer tools, testing & delivery</b></summary>
+
+Version control, automated checks, packaging, and deployment.
+
+<p>
+  <a href="https://github.com/hamza1713/Portfolio"><img alt="Git — explore project" title="Git: see it in my work" src="https://img.shields.io/badge/Git-183B33?style=for-the-badge&amp;logo=git&amp;logoColor=F68A76" height="28"></a>
+  <a href="https://github.com/hamza1713/Portfolio/actions"><img alt="GitHub Actions — explore project" title="GitHub Actions: see it in my work" src="https://img.shields.io/badge/GitHub%20Actions-183B33?style=for-the-badge&amp;logo=githubactions&amp;logoColor=86D9E3" height="28"></a>
+  <a href="https://github.com/hamza1713/Enterprise-RAG-Chatbot-with-Role-Base-Access-Control-"><img alt="Docker — explore project" title="Docker: see it in my work" src="https://img.shields.io/badge/Docker-183B33?style=for-the-badge&amp;logo=docker&amp;logoColor=86D9E3" height="28"></a>
+  <a href="https://github.com/hamza1713/Portfolio"><img alt="Vercel — explore project" title="Vercel: see it in my work" src="https://img.shields.io/badge/Vercel-183B33?style=for-the-badge&amp;logo=vercel&amp;logoColor=FFFFFF" height="28"></a>
+  <a href="https://github.com/hamza1713/AI-Code-Review-Agent/tree/main/tests"><img alt="pytest — explore project" title="pytest: see it in my work" src="https://img.shields.io/badge/pytest-183B33?style=for-the-badge&amp;logo=pytest&amp;logoColor=F5AD62" height="28"></a>
+</p>
+
+</details>
 
 <details>
 <summary><b>Learning and foundations</b></summary>
