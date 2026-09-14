@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="#choose-your-route">Start here</a> · <a href="#selected-work">Selected work</a> · <a href="#the-lab">The lab</a> · <a href="#toolkit">Toolkit</a> · <a href="#lets-build">Contact</a>
+  <a href="#choose-your-route">Start here</a> · <a href="#selected-work">Selected work</a> · <a href="#system-design-gallery">Diagrams</a> · <a href="#the-lab">The lab</a> · <a href="#toolkit">Toolkit</a> · <a href="#lets-build">Contact</a>
 </p>
 
 ### AI / GenAI engineer building useful, inspectable applications.
@@ -124,6 +124,304 @@ Three projects that show how I approach AI application engineering. **Select a c
 **Engineering focus:** a shared analysis flow, desktop packaging, caching, and fallback paths when provider quotas are reached.
 
 **Tradeoff:** the final fallback runs without search grounding. Citation availability and human review matter; a generated assessment is not a guarantee that a claim is true or false.
+
+</details>
+
+## System design gallery
+
+**Five projects. Two views each.** Expand a project to explore **who it serves** and **how its proposed system fits together**. The architecture blueprints preserve the requested design; implementation notes explain where the current code differs.
+
+| Project | Design focus |
+| :--- | :--- |
+| [AI Code Review Agent](#code-review-diagrams) | Deterministic-first review |
+| [FinSight — Enterprise RAG Workspace](#finsight-diagrams) | Access control before retrieval |
+| [Autonomous Social Media Brand Manager](#brand-manager-diagrams) | Sequential agents and revision design |
+| [Factscope-AI — Claim Verification](#factscope-diagrams) | Three-tier failover |
+| [Deep-Fake Detection — Multimodal AI](#deepfake-diagrams) | Compact media-analysis flow |
+
+<a id="code-review-diagrams"></a>
+
+<details>
+<summary><b>01 · AI Code Review Agent — explore both diagrams</b></summary>
+
+**Implementation note:** The repository currently documents native Python AST context and two parallel reviewers followed by Tech Lead synthesis. The blueprint below shows the requested Tree-sitter / three-parallel-agent design. Governance is also evaluated during the current pre-scan.
+
+**Use cases — actors and their goals.**
+
+```mermaid
+flowchart LR
+    developer["Actor: Developer"]
+    maintainer["Actor: Maintainer"]
+    automation["Actor: GitHub / CI"]
+    subgraph platform["AI Code Review Agent"]
+        request("Request a PR review")
+        inspect("Inspect findings and confidence")
+        suggestions("Apply inline suggestions")
+        policy("Configure review governance")
+        tests("Obtain regression tests")
+        scanning("Consume SARIF findings")
+    end
+    developer -->|"opens or updates a PR"| request
+    developer -->|"uses the React dashboard"| inspect
+    developer -->|"reviews proposed fixes"| suggestions
+    maintainer -->|"defines repository rules"| policy
+    maintainer -->|"checks regression coverage"| tests
+    automation -->|"invokes webhook or GitHub Action"| request
+    automation -->|"runs generated pytest tests"| tests
+    automation -->|"imports into Code Scanning"| scanning
+```
+
+**Architecture blueprint — request flow and component boundaries.**
+
+```mermaid
+flowchart TD
+    webhook["GitHub PR webhook"] --> api["FastAPI backend"]
+    action["Reusable GitHub Action"] -->|"submit review"| api
+    api --> queue[("SQLite durable queue<br/>Crash recovery")]
+    queue -->|"dequeue review job"| static["Run static analysis FIRST<br/>Semgrep · Bandit · Ruff"]
+    static -->|"completed deterministic analysis"| gate["STATIC-ANALYSIS GATE<br/>No LLM dispatch before this point"]
+    gate --> context["Tree-sitter<br/>Build repo-wide call graph"]
+    context -->|"findings and repository context"| orchestrator["CrewAI orchestrator"]
+    subgraph parallel["Parallel agent reviews — design blueprint"]
+        senior["Senior Developer<br/>Gemini"]
+        security["Security Engineer<br/>Gemini"]
+        lead["Tech Lead<br/>Gemini"]
+    end
+    orchestrator --> senior
+    orchestrator --> security
+    orchestrator --> lead
+    senior --> governance["Deterministic governance enforcement"]
+    security --> governance
+    lead --> governance
+    rules[".code-review.yaml"] -->|"policy rules"| governance
+    governance --> aggregator["Verdict aggregator<br/>Verdict and confidence score"]
+    aggregator --> comments["Inline GitHub suggestion comments"]
+    aggregator --> tests["Generated pytest regression tests"]
+    aggregator --> sarif["SARIF v2.1.0 export"]
+    comments --> pr["GitHub PR"]
+    tests --> ci["CI regression checks"]
+    sarif --> scanning["GitHub Code Scanning / CI"]
+    aggregator -->|"review results"| api
+    api -->|"findings and verdict"| frontend["React / TypeScript dashboard"]
+    classDef focal fill:#fff3cd,stroke:#b7791f,stroke-width:3px,color:#332500;
+    class gate focal;
+```
+
+[Inspect the current repository](https://github.com/hamza1713/AI-Code-Review-Agent) · [Back to gallery](#system-design-gallery)
+
+</details>
+
+<a id="finsight-diagrams"></a>
+
+<details>
+<summary><b>02 · FinSight — Enterprise RAG Workspace — explore both diagrams</b></summary>
+
+**Implementation note:** This is a high-level design view of the permission boundary and retrieval paths, not a claim that every question executes both paths concurrently. The repository is documented as a staging candidate; consult its readiness report for remaining gates.
+
+**Use cases — actors and their goals.**
+
+```mermaid
+flowchart LR
+    user["Actor: Authenticated User"]
+    admin["Actor: Access Administrator"]
+    subgraph workspace["FinSight Enterprise RAG Workspace"]
+        documents("Ask questions about permitted documents")
+        analytics("Analyze permitted structured data")
+        citations("Inspect answers and cited sources")
+        access("Manage roles and permissions")
+    end
+    user -->|"submits a document question"| documents
+    user -->|"submits an analytics question"| analytics
+    user -->|"checks supporting evidence"| citations
+    admin -->|"defines authorized access"| access
+```
+
+**Architecture blueprint — request flow and component boundaries.**
+
+```mermaid
+flowchart TD
+    frontend["React / TypeScript frontend"]
+    backend["FastAPI backend<br/>Resolve user role and permissions"]
+    gate{"RBAC POLICY GATE<br/>Authorize and scope BEFORE retrieval"}
+    frontend -->|"authenticated question"| backend
+    backend --> gate
+    gate -->|"access denied"| denied["Access-denied response"]
+    denied --> frontend
+    gate -->|"permitted document scope"| vector["ChromaDB vector search<br/>Search permitted documents only"]
+    gate -->|"permitted SQL scope"| sql["DuckDB analytics<br/>Query permitted data only"]
+    vector -->|"authorized document passages"| orchestration["LangChain orchestration"]
+    sql -->|"authorized query results"| orchestration
+    orchestration -->|"question and scoped evidence"| gemini["Gemini<br/>Generate grounded answer with citations"]
+    gemini -->|"answer and citations"| backend
+    backend -->|"response"| frontend
+    classDef focal fill:#fff3cd,stroke:#b7791f,stroke-width:4px,color:#332500;
+    class gate focal;
+```
+
+[Inspect the current repository](https://github.com/hamza1713/Enterprise-RAG-Chatbot-with-Role-Base-Access-Control-) · [Back to gallery](#system-design-gallery)
+
+</details>
+
+<a id="brand-manager-diagrams"></a>
+
+<details>
+<summary><b>03 · Autonomous Social Media Brand Manager — explore both diagrams</b></summary>
+
+**Implementation note:** The implemented workflow uses sequential CrewAI tasks, task context, memory, and mock social adapters. The explicit shared campaign store and targeted user-revision loop below are design concepts, not verified implemented features.
+
+**Use cases — actors and their goals.**
+
+```mermaid
+flowchart LR
+    owner["Actor: Campaign Owner"]
+    subgraph manager["Autonomous Social Media Brand Manager"]
+        brief("Submit campaign brief")
+        generate("Generate a coordinated campaign")
+        inspect("Review final campaign package")
+        revise("Request copy revisions — design goal")
+    end
+    owner -->|"provides goals and brand context"| brief
+    owner -->|"starts the campaign workflow"| generate
+    owner -->|"examines content and analytics"| inspect
+    owner -->|"provides change requests"| revise
+```
+
+**Architecture blueprint — request flow and component boundaries.**
+
+```mermaid
+flowchart TD
+    user["Campaign owner"]
+    ui["Streamlit frontend"]
+    strategy["1. Strategy Agent<br/>Gemini"]
+    copy["2. Copywriting Agent<br/>Gemini"]
+    review["3. Review Agent<br/>Gemini"]
+    engagement["4. Engagement Agent<br/>Gemini"]
+    analytics["5. Analytics Agent<br/>Gemini"]
+    context[("Shared campaign context store<br/>Design concept")]
+    user -->|"submit brief"| ui
+    ui -->|"new campaign brief"| strategy
+    strategy -->|"strategy and constraints"| copy
+    copy -->|"draft content"| review
+    review -->|"reviewed content"| engagement
+    engagement -->|"engagement plan"| analytics
+    analytics -->|"final campaign package"| ui
+    ui -->|"display campaign package"| user
+    ui -.->|"proposed user-revision loop"| copy
+    strategy <-->|"read / write"| context
+    copy <-->|"read / write"| context
+    review <-->|"read / write"| context
+    engagement <-->|"read / write"| context
+    analytics <-->|"read / write"| context
+```
+
+[Inspect the current repository](https://github.com/hamza1713/Autonomous-Social-Media-Brand-Manager) · [Back to gallery](#system-design-gallery)
+
+</details>
+
+<a id="factscope-diagrams"></a>
+
+<details>
+<summary><b>04 · Factscope-AI — Claim Verification — explore both diagrams</b></summary>
+
+**Implementation note:** The current implementation falls back on quota errors: Tier 1 Gemini with search → Tier 2 Gemini with search → Tier 3 Gemini without search. Search runs through the model's grounding tool, and confidence comes from the model response. The separate grounding / aggregation stages and rule-based final fallback below are the requested design blueprint.
+
+**Use cases — actors and their goals.**
+
+```mermaid
+flowchart LR
+    webUser["Actor: Web User"]
+    desktopUser["Actor: Desktop User"]
+    subgraph factscope["Factscope-AI"]
+        submit("Submit news content or a claim")
+        verdict("View verification verdict and confidence")
+        evidence("Inspect cited sources")
+    end
+    webUser -->|"uses React web client"| submit
+    desktopUser -->|"uses Electron desktop client"| submit
+    webUser -->|"reviews the assessment"| verdict
+    desktopUser -->|"reviews the assessment"| verdict
+    webUser -->|"checks source support"| evidence
+    desktopUser -->|"checks source support"| evidence
+```
+
+**Architecture blueprint — request flow and component boundaries.**
+
+```mermaid
+flowchart TD
+    desktop["Electron desktop client"]
+    web["React web client"]
+    backend["Express / TypeScript backend"]
+    grounding["Web search grounding layer<br/>Retrieve current evidence"]
+    desktop -->|"claim verification request"| backend
+    web -->|"claim verification request"| backend
+    backend --> grounding
+    subgraph fallback["Three-tier fallback engine — design blueprint"]
+        direction TD
+        tier1["Tier 1<br/>Primary Gemini verification"]
+        tier2["Tier 2<br/>Secondary model verification"]
+        tier3["Tier 3<br/>Rule-based / final fallback<br/>Design goal"]
+        tier1 -->|"FAILURE OR TIMEOUT"| tier2
+        tier2 -->|"FAILURE OR TIMEOUT"| tier3
+    end
+    grounding -->|"claim and evidence context"| tier1
+    grounding -->|"retrieved evidence"| aggregator["Evidence aggregator<br/>Combine evidence and verification output<br/>Produce confidence score"]
+    tier1 -->|"success: verification output"| aggregator
+    tier2 -->|"success: verification output"| aggregator
+    tier3 -->|"fallback assessment"| aggregator
+    aggregator --> result["Verdict, confidence, and cited sources"]
+    result -->|"verification response"| backend
+    backend -->|"return result"| desktop
+    backend -->|"return result"| web
+    classDef primary fill:#e6f4ea,stroke:#287a45,color:#163d24;
+    classDef fallbackTier fill:#fff3cd,stroke:#b7791f,color:#332500;
+    classDef finalTier fill:#fce8e6,stroke:#b63c32,color:#521d19;
+    class tier1 primary;
+    class tier2 fallbackTier;
+    class tier3 finalTier;
+```
+
+[Inspect the current repository](https://github.com/hamza1713/Factscope-AI) · [Back to gallery](#system-design-gallery)
+
+</details>
+
+<a id="deepfake-diagrams"></a>
+
+<details>
+<summary><b>05 · Deep-Fake Detection — Multimodal AI — explore both diagrams</b></summary>
+
+**Implementation note:** The current API sends text or inline media to Gemini and returns structured JSON. Backend resizing, frame extraction, and region highlighting are design goals in this blueprint, not features established by the current endpoint. Model confidence is not calibrated forensic accuracy.
+
+**Use cases — actors and their goals.**
+
+```mermaid
+flowchart LR
+    user["Actor: User"]
+    subgraph app["Deep-Fake Detection"]
+        upload("Upload media for analysis")
+        assessment("View manipulation assessment and confidence")
+        explanation("Inspect explanation and optional highlights")
+    end
+    user -->|"selects media"| upload
+    user -->|"reviews analysis results"| assessment
+    user -->|"examines supporting indicators"| explanation
+```
+
+**Architecture blueprint — request flow and component boundaries.**
+
+```mermaid
+flowchart LR
+    upload["1. React / TypeScript / Vite<br/>Media upload"]
+    preprocess["2. Backend preprocessing<br/>Resize / extract frames<br/>Design goal"]
+    model["3. Gemini multimodal analysis<br/>Manipulation and AI-generation indicators"]
+    postprocess["4. Post-processing<br/>Confidence score<br/>Region highlighting: design goal"]
+    result["5. React frontend<br/>Render result and explanation"]
+    upload -->|"uploaded media"| preprocess
+    preprocess -->|"prepared media / frames"| model
+    model -->|"analysis and detected indicators"| postprocess
+    postprocess -->|"assessment, explanation, and highlights"| result
+```
+
+[Inspect the current repository](https://github.com/hamza1713/Deep-Fake-Detection) · [Back to gallery](#system-design-gallery)
 
 </details>
 
