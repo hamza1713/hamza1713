@@ -1,20 +1,17 @@
-# Profile design notes
+# Profile Design Notes
 
-This profile uses GitHub-rendered Markdown, expandable details, linked SVG cards, and a light/dark header. Videos and the AI assistant live on the linked portfolio website.
+This GitHub profile serves as a **senior technical audit trail** unified with Hamza Ali's interactive portfolio (`personalportfolio-theta-gules-56.vercel.app`) and LinkedIn presence (`linkedin.com/in/hamza-ali-ai/`).
 
-## Updating the visuals
+## Visual & Editorial Standards
 
-Edit `generate-assets.mjs`, then run `node generate-assets.mjs` with Node.js. It writes the eight SVG files in `assets/` without third-party packages. Commit the generated assets alongside any README changes.
+- **Palette:** Obsidian slate (`#070b14` / `#0d1628`) with emerald-mint (`#34d399`) and system-specific accents (`#38bdf8`, `#2dd4bf`, `#a78bfa`) in dark mode; crisp editorial slate-white (`#f8fafc` / `#059669`) in light mode via `<picture>` + `prefers-color-scheme`.
+- **Zero-dependency assets:** All 10 SVGs (`hero-dark.svg`, `hero-light.svg`, `portfolio.svg`, `resume.svg`, `linkedin.svg`, `contact.svg`, `code-review.svg`, `mcp-secure-db.svg`, `finsight.svg`, `factscope.svg`) are generated deterministically by `generate-assets.mjs` with zero third-party packages, zero JavaScript, zero external fonts, and zero tracking requests. The subtle pipeline signal animation respects `prefers-reduced-motion`.
+- **Implemented-only documentation:** Every Mermaid diagram and metric in `README.md` reflects verified, implemented repository behavior—never unimplemented design concepts. Limitations and benchmark scopes are explicitly disclosed alongside quantitative results.
 
-The header contains a slow decorative signal animation and respects `prefers-reduced-motion`. The SVGs contain no JavaScript, external fonts, tracking, or network dependencies. Meaningful project details and links also appear as ordinary README text.
+## Regenerating Assets
 
-## Research references
+```bash
+node generate-assets.mjs
+```
 
-Reviewed in September 2026:
-
-- [Anurag Hazra](https://github.com/anuraghazra): clear personal positioning, custom header, and featured repository cards.
-- [DenverCoder1](https://github.com/DenverCoder1): expandable sections, animated SVG imagery, and clickable project cards.
-- [Awesome GitHub Profile README](https://github.com/abhisheknaiidu/awesome-github-profile-readme): a directory of varied profile designs.
-- [GitHub: collapsed sections](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-collapsed-sections): supported details/summary behavior.
-
-The visual assets and wording are original to this portfolio; these references informed the layout patterns. Keep project claims tied to source and label experimental results with their actual scope. Update the content-review date only after checking the linked project evidence.
+Commit regenerated `assets/*.svg` files alongside any `README.md` edits. Update the footer verification date only after re-checking linked test suites, benchmarks, and security evidence.
