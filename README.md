@@ -4,7 +4,7 @@
   <a href="https://personalportfolio-theta-gules-56.vercel.app/">
     <picture>
       <source media="(prefers-color-scheme: light)" srcset="assets/hero-light.svg">
-      <img src="assets/hero-dark.svg" width="100%" alt="Hamza Ali — Full-Stack & Forward-Deployed AI Engineer. AI systems that prove their answers: Fail-Closed Agents, Zero-Leak RBAC RAG, and Hardened MCP Servers.">
+      <img src="assets/hero-dark.svg" width="100%" alt="Hamza Ali — Full-Stack AI & LLM Systems Engineer. Production AI systems that prove their answers: Multi-Agent Workflows, Enterprise RAG & Text-to-SQL, and Secure MCP Servers.">
     </picture>
   </a>
 </p>
@@ -22,12 +22,12 @@
 
 ---
 
-### Full-Stack & Forward-Deployed AI Engineer — building fail-closed systems that prove their answers.
+### Full-Stack AI &amp; LLM Systems Engineer — Multi-Agent Workflows, Enterprise RAG &amp; Secure MCP Infrastructure
 
-Most LLM prototypes work in a notebook and fail in production—leaking restricted data across roles, running unsafe SQL or tool calls, hallucinating on edge cases, or burning tokens on checks that should be deterministic. I own the full vertical slice across **Python (FastAPI)**, **TypeScript (Node.js & React 19)**, **hybrid retrieval**, **hardened MCP servers**, and **automated evaluation harnesses** (`979+` automated tests across flagship repositories).
+Most LLM prototypes work in a notebook and fail in production—leaking restricted data across roles, running unsafe SQL or tool calls, hallucinating on edge cases, or burning tokens on checks that should be deterministic. I build the complete vertical slice across **Python (FastAPI)**, **TypeScript (Node.js &amp; React 19)**, **hybrid retrieval**, **MCP tool servers**, and **automated evaluation suites** (`979+` automated tests across flagship repositories).
 
 - **Deterministic before probabilistic:** Run SAST/AST scanners, SQL parsers, and RBAC gates at zero token cost before any LLM call.
-- **Fail-closed security by architecture:** Enforce role isolation, PII controls, and worker/SQL sandboxes in code—never via prompts.
+- **Security by architecture (not prompts):** Enforce role isolation, PII controls, and worker/SQL sandboxes in code so unauthorized or invalid operations are blocked before reaching data or models.
 - **Measured, honest reliability:** Ship regression suites, differential/fuzz tests, RAGAS evals, and CI claims-linters with explicit failure boundaries.
 
 **Lahore, Pakistan (UTC+5 · Remote)** · Open to **Full-Stack AI**, **Forward-Deployed AI**, and **LLM Systems** roles + select **AI architecture & reliability advisory**.

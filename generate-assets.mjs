@@ -66,16 +66,16 @@ for (const light of [false, true]) {
   b += rect(0, 0, 960, 360, 'url(#glow)', 'none', 0);
 
   // Left: Status pill
-  b += rect(38, 30, 392, 28, pillBg, accent, 14, 'stroke-opacity="0.45"');
+  b += rect(38, 30, 356, 28, pillBg, accent, 14, 'stroke-opacity="0.45"');
   b += `<circle cx="55" cy="44" r="4" fill="${accent}"/>`;
-  b += text(68, 48, 'FULL-STACK & FORWARD-DEPLOYED AI ENGINEER', 11.5, pillFg, 'class="mono" font-weight="700" letter-spacing="0.8"');
+  b += text(68, 48, 'FULL-STACK AI & LLM SYSTEMS ENGINEER', 11.5, pillFg, 'class="mono" font-weight="700" letter-spacing="0.8"');
 
-  // Left: Headline matching Portfolio & LinkedIn Banner
-  b += text(38, 122, 'AI systems that', 48, fg, 'font-weight="800" letter-spacing="-1.6"');
-  b += `<text x="38" y="176" fill="${fg}" font-size="48" font-weight="800" letter-spacing="-1.6">prove their <tspan fill="${accent}">answers.</tspan></text>`;
+  // Left: Headline matching Portfolio
+  b += text(38, 120, 'Production AI systems', 44, fg, 'font-weight="800" letter-spacing="-1.4"');
+  b += `<text x="38" y="172" fill="${fg}" font-size="44" font-weight="800" letter-spacing="-1.4">that prove their <tspan fill="${accent}">answers.</tspan></text>`;
 
-  // Left: Subtitle
-  b += text(38, 214, 'Fail-Closed Agents  ·  Zero-Leak RBAC RAG  ·  Hardened MCP Servers', 15.5, muted, 'font-weight="500"');
+  // Left: Subtitle (clear, zero-jargon pillars)
+  b += text(38, 212, 'Multi-Agent Workflows  ·  Enterprise RAG & SQL  ·  Secure MCP Servers', 15, muted, 'font-weight="500"');
 
   // Left: Proof pills
   b += rect(38, 240, 186, 32, pillBg, accent, 8, 'stroke-opacity="0.55"');
@@ -89,13 +89,13 @@ for (const light of [false, true]) {
 
   // Left: Footer divider & geo/philosophy strip
   b += `<line x1="38" y1="302" x2="566" y2="302" stroke="${border}" stroke-width="1"/>`;
-  b += text(38, 328, 'LAHORE, PAKISTAN (UTC+5 · REMOTE)   //   DETERMINISTIC FIRST · FAIL-CLOSED', 11, subtle, 'class="mono" letter-spacing="0.7"');
+  b += text(38, 328, 'LAHORE, PAKISTAN (UTC+5 · REMOTE)   //   FULL-STACK & FORWARD-DEPLOYED AI', 11, subtle, 'class="mono" letter-spacing="0.7"');
 
-  // Right: Deterministic-First Gate Architecture Panel
+  // Right: Production AI Architecture Panel
   b += rect(584, 30, 342, 300, panel, accentBorder, 14, 'stroke-opacity="0.35"');
   b += `<circle cx="606" cy="55" r="4" fill="${accent}"/>`;
-  b += text(618, 59, 'DETERMINISTIC-FIRST GATE', 11, accent, 'class="mono" font-weight="700" letter-spacing="0.9"');
-  b += text(910, 59, 'FAIL-CLOSED', 10.5, muted, 'class="mono" font-weight="600" text-anchor="end" letter-spacing="0.6"');
+  b += text(618, 59, 'PRODUCTION AI ARCHITECTURE', 11, accent, 'class="mono" font-weight="700" letter-spacing="0.8"');
+  b += text(910, 59, 'VERIFIED', 10.5, muted, 'class="mono" font-weight="600" text-anchor="end" letter-spacing="0.6"');
   b += `<line x1="602" y1="74" x2="910" y2="74" stroke="${border}" stroke-width="1"/>`;
 
   // Vertical pipeline rail + animated pulse
@@ -105,7 +105,7 @@ for (const light of [false, true]) {
   const gates = [
     ['01', 'RBAC & AST Gate', '0.33ms · 0 tok'],
     ['02', 'Hybrid RAG + SQL', '0 filter leaks'],
-    ['03', 'Agents & MCP', '14 MCP tools'],
+    ['03', 'Multi-Agent & MCP', '14 MCP tools'],
     ['04', 'CI Evals & Proof', '979+ tests'],
   ];
 
