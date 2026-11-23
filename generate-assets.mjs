@@ -6,120 +6,133 @@ const out = path.join(decodeURIComponent(root), 'assets');
 fs.mkdirSync(out, { recursive: true });
 
 const esc = (s) =>
-  s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+  String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 
-const rect = (x, y, w, h, fill, stroke = 'none', r = 12, extra = '') =>
+const SANS = "Inter, 'Segoe UI Variable Display', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif";
+const MONO = "'JetBrains Mono', 'Cascadia Code', 'SF Mono', Consolas, Menlo, monospace";
+
+const rect = (x, y, w, h, fill, stroke = 'none', r = 8, extra = '') =>
   `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}" stroke="${stroke}" ${extra}/>`;
 
-const text = (x, y, s, size = 18, fill = '#f8fafc', extra = '') =>
+const text = (x, y, s, size, fill, extra = '') =>
   `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" ${extra}>${esc(s)}</text>`;
+
+const mono = (x, y, s, size, fill, extra = '') => text(x, y, s, size, fill, `class="m" ${extra}`);
+
+const line = (x1, y1, x2, y2, stroke, w = 1, extra = '') =>
+  `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="${w}" ${extra}/>`;
 
 const svg = (w, h, title, body) =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-labelledby="title">` +
   `<title id="title">${esc(title)}</title>` +
-  `<g font-family="Segoe UI, -apple-system, BlinkMacSystemFont, Inter, Arial, sans-serif">${body}</g></svg>\n`;
+  `<style>.m{font-family:${MONO};}</style>` +
+  `<g font-family="${SANS}">${body}</g></svg>\n`;
 
 const save = (name, contents) => fs.writeFileSync(path.join(out, `${name}.svg`), contents, 'utf8');
 
-// 1. Adaptive Dark & Light Hero Banners (960 x 360)
+// Shared terminal-style evidence panel (always dark for contrast in both themes)
+const T = {
+  bg: '#0b0f15',
+  bar: '#10161e',
+  border: '#232c38',
+  fg: '#e6edf3',
+  muted: '#7d8896',
+  dim: '#3a4553',
+  mint: '#3ddc97',
+  sky: '#58a6ff',
+  violet: '#b392f0',
+};
+
+// ─────────────────────────────────────────────────────────────
+// 1. Hero banners (960 × 360) — dark + light
+// ─────────────────────────────────────────────────────────────
 for (const light of [false, true]) {
-  const bg = light ? '#f8fafc' : '#070b14';
-  const bg2 = light ? '#eef6f5' : '#0b1426';
-  const panel = light ? '#ffffff' : '#0d1628';
-  const stepBg = light ? '#f1f5f9' : '#111d33';
-  const border = light ? '#cbd5e1' : '#1e293b';
-  const accentBorder = light ? '#0d9488' : '#2dd4bf';
-  const fg = light ? '#0f172a' : '#f8fafc';
-  const muted = light ? '#475569' : '#94a3b8';
-  const subtle = light ? '#64748b' : '#64748b';
-  const accent = light ? '#059669' : '#34d399';
-  const accent2 = light ? '#0284c7' : '#38bdf8';
-  const pillBg = light ? '#ecfdf5' : '#0b2220';
-  const pillFg = light ? '#047857' : '#6ee7b7';
-  const gridLine = light ? '#cbd5e1' : '#1e293b';
-  const numFg = light ? '#ffffff' : '#051411';
+  const c = light
+    ? { bg1: '#ffffff', bg2: '#f4f7f9', border: '#d8dee4', fg: '#0d1117', muted: '#57606a', faint: '#8c959f', dot: '#c9d1d9', accent: '#0a8f5a', accent2: '#0969da', rule: '#e1e6eb' }
+    : { bg1: '#0a0d12', bg2: '#0d1117', border: '#1f2630', fg: '#f0f3f6', muted: '#9da7b3', faint: '#6e7781', dot: '#26303b', accent: '#3ddc97', accent2: '#58a6ff', rule: '#1f2630' };
 
   let b = `<defs>
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="${bg}"/>
-      <stop offset="100%" stop-color="${bg2}"/>
-    </linearGradient>
-    <radialGradient id="glow" cx="76%" cy="46%" r="48%">
-      <stop offset="0%" stop-color="${accent}" stop-opacity="${light ? '0.10' : '0.14'}"/>
-      <stop offset="100%" stop-color="${accent}" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse">
-      <path d="M 36 0 L 0 0 0 36" fill="none" stroke="${gridLine}" stroke-width="0.7" opacity="${light ? '0.45' : '0.42'}"/>
-    </pattern>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c.bg1}"/><stop offset="1" stop-color="${c.bg2}"/></linearGradient>
+    <linearGradient id="hl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${c.accent}" stop-opacity="0"/><stop offset="0.35" stop-color="${c.accent}"/><stop offset="0.7" stop-color="${c.accent2}"/><stop offset="1" stop-color="${c.accent2}" stop-opacity="0"/></linearGradient>
+    <linearGradient id="word" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${c.accent}"/><stop offset="1" stop-color="${c.accent2}"/></linearGradient>
+    <radialGradient id="glow" cx="78%" cy="52%" r="42%"><stop offset="0" stop-color="${c.accent}" stop-opacity="${light ? 0.10 : 0.12}"/><stop offset="1" stop-color="${c.accent}" stop-opacity="0"/></radialGradient>
+    <radialGradient id="fade" cx="30%" cy="40%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <mask id="dm"><rect width="960" height="360" fill="url(#fade)"/></mask>
+    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="${c.dot}"/></pattern>
+    <clipPath id="clip"><rect x="1" y="1" width="958" height="358" rx="13"/></clipPath>
   </defs>
   <style>
-    .mono { font-family: 'Cascadia Code', Consolas, 'SFMono-Regular', Menlo, monospace; }
-    .pulse { stroke-dasharray: 14 210; animation: flow 7s linear infinite; }
-    @keyframes flow { to { stroke-dashoffset: -224; } }
-    @media (prefers-reduced-motion: reduce) { .pulse { animation: none; stroke-dasharray: none; opacity: 0.35; } }
+    .cur{animation:blink 1.1s steps(1) infinite}
+    @keyframes blink{50%{opacity:0}}
+    @media (prefers-reduced-motion: reduce){.cur{animation:none}}
   </style>`;
 
-  b += rect(0.5, 0.5, 959, 359, 'url(#bgGrad)', border, 16);
-  b += `<clipPath id="clipHero"><rect x="1" y="1" width="958" height="358" rx="15"/></clipPath>`;
-  b += `<g clip-path="url(#clipHero)">`;
-  b += rect(0, 0, 960, 360, 'url(#grid)', 'none', 0);
-  b += rect(0, 0, 960, 360, 'url(#glow)', 'none', 0);
+  b += rect(0.5, 0.5, 959, 359, 'url(#bg)', c.border, 14);
+  b += `<g clip-path="url(#clip)">`;
+  b += `<rect width="960" height="360" fill="url(#dots)" mask="url(#dm)" opacity="${light ? 0.8 : 0.9}"/>`;
+  b += `<rect width="960" height="360" fill="url(#glow)"/>`;
+  b += `<rect x="0" y="0" width="960" height="1.5" fill="url(#hl)"/>`;
 
-  // Left: Status pill
-  b += rect(38, 30, 356, 28, pillBg, accent, 14, 'stroke-opacity="0.45"');
-  b += `<circle cx="55" cy="44" r="4" fill="${accent}"/>`;
-  b += text(68, 48, 'FULL-STACK AI & LLM SYSTEMS ENGINEER', 11.5, pillFg, 'class="mono" font-weight="700" letter-spacing="0.8"');
+  // Left column
+  b += `<circle cx="44" cy="47" r="3.5" fill="${c.accent}"/>`;
+  b += `<circle cx="44" cy="47" r="7" fill="none" stroke="${c.accent}" stroke-opacity="0.35"/>`;
+  b += mono(58, 51, 'HAMZA ALI  /  AI & LLM SYSTEMS ENGINEER', 11.5, c.muted, 'letter-spacing="1.6" font-weight="500"');
 
-  // Left: Headline matching Portfolio
-  b += text(38, 120, 'Production AI systems', 44, fg, 'font-weight="800" letter-spacing="-1.4"');
-  b += `<text x="38" y="172" fill="${fg}" font-size="44" font-weight="800" letter-spacing="-1.4">that prove their <tspan fill="${accent}">answers.</tspan></text>`;
+  b += text(40, 122, 'Production AI systems', 43, c.fg, 'font-weight="700" letter-spacing="-1.6"');
+  b += `<text x="40" y="172" font-size="43" font-weight="700" letter-spacing="-1.6" fill="${c.fg}">that prove their <tspan fill="url(#word)">answers.</tspan></text>`;
 
-  // Left: Subtitle (clear, zero-jargon pillars)
-  b += text(38, 212, 'Multi-Agent Workflows  ·  Enterprise RAG & SQL  ·  Secure MCP Servers', 15, muted, 'font-weight="500"');
+  b += text(40, 210, 'Multi-agent workflows, enterprise RAG & text-to-SQL, and secure MCP', 15.5, c.muted, 'font-weight="400"');
+  b += text(40, 232, 'servers — with guardrails in code and tests that prove them.', 15.5, c.muted, 'font-weight="400"');
 
-  // Left: Proof pills
-  b += rect(38, 240, 186, 32, pillBg, accent, 8, 'stroke-opacity="0.55"');
-  b += text(131, 260, '✓ 979+ Automated Tests', 12, pillFg, 'class="mono" font-weight="700" text-anchor="middle"');
-
-  b += rect(234, 240, 148, 32, panel, border, 8);
-  b += text(308, 260, 'Python · FastAPI', 12, fg, 'class="mono" font-weight="600" text-anchor="middle"');
-
-  b += rect(392, 240, 174, 32, panel, border, 8);
-  b += text(479, 260, 'TypeScript · React 19', 12, fg, 'class="mono" font-weight="600" text-anchor="middle"');
-
-  // Left: Footer divider & geo/philosophy strip
-  b += `<line x1="38" y1="302" x2="566" y2="302" stroke="${border}" stroke-width="1"/>`;
-  b += text(38, 328, 'LAHORE, PAKISTAN (UTC+5 · REMOTE)   //   FULL-STACK & FORWARD-DEPLOYED AI', 11, subtle, 'class="mono" letter-spacing="0.7"');
-
-  // Right: Production AI Architecture Panel
-  b += rect(584, 30, 342, 300, panel, accentBorder, 14, 'stroke-opacity="0.35"');
-  b += `<circle cx="606" cy="55" r="4" fill="${accent}"/>`;
-  b += text(618, 59, 'PRODUCTION AI ARCHITECTURE', 11, accent, 'class="mono" font-weight="700" letter-spacing="0.8"');
-  b += text(910, 59, 'VERIFIED', 10.5, muted, 'class="mono" font-weight="600" text-anchor="end" letter-spacing="0.6"');
-  b += `<line x1="602" y1="74" x2="910" y2="74" stroke="${border}" stroke-width="1"/>`;
-
-  // Vertical pipeline rail + animated pulse
-  b += `<line x1="624" y1="104" x2="624" y2="292" stroke="${border}" stroke-width="2"/>`;
-  b += `<line class="pulse" x1="624" y1="104" x2="624" y2="292" stroke="${accent}" stroke-width="2"/>`;
-
-  const gates = [
-    ['01', 'RBAC & AST Gate', '0.33ms · 0 tok'],
-    ['02', 'Hybrid RAG + SQL', '0 filter leaks'],
-    ['03', 'Multi-Agent & MCP', '14 MCP tools'],
-    ['04', 'CI Evals & Proof', '979+ tests'],
+  // Stat row
+  const stats = [
+    ['979+', 'AUTOMATED TESTS'],
+    ['4', 'FLAGSHIP SYSTEMS'],
+    ['0', 'RBAC FILTER LEAKS'],
   ];
-
-  gates.forEach(([num, label, metric], i) => {
-    const y = 88 + i * 58;
-    b += rect(602, y, 308, 46, stepBg, border, 9);
-    b += rect(612, y + 12, 26, 22, accent, 'none', 5);
-    b += text(625, y + 27, num, 11, numFg, 'class="mono" font-weight="700" text-anchor="middle"');
-    b += text(648, y + 27, label, 12.5, fg, 'font-weight="700"');
-    b += text(898, y + 27, metric, 10.8, i === 1 ? accent2 : accent, 'class="mono" font-weight="600" text-anchor="end"');
+  stats.forEach(([n, l], i) => {
+    const x = 40 + i * 168;
+    if (i > 0) b += line(x - 22, 268, x - 22, 314, c.rule);
+    b += text(x, 294, n, 26, c.fg, 'font-weight="600" letter-spacing="-0.8"');
+    b += mono(x, 314, l, 10, c.faint, 'letter-spacing="1.3"');
   });
 
-  // Bottom accent strip
-  b += `<rect x="0" y="356" width="960" height="4" fill="${accent}" opacity="${light ? '0.65' : '0.55'}"/>`;
+  b += mono(40, 340, 'LAHORE, PK  ·  UTC+5  ·  OPEN TO REMOTE ROLES', 10, c.faint, 'letter-spacing="1.4"');
+
+  // Right: terminal evidence panel
+  const px = 572, py = 34, pw = 356, ph = 292;
+  b += rect(px + 0.5, py + 6.5, pw, ph, '#000', 'none', 10, `opacity="${light ? 0.08 : 0.35}"`);
+  b += rect(px + 0.5, py + 0.5, pw, ph, T.bg, light ? '#1f2630' : T.border, 10);
+  b += `<path d="M${px + 0.5} ${py + 34} V${py + 10.5} a10 10 0 0 1 10 -10 H${px + pw - 9.5} a10 10 0 0 1 10 10 V${py + 34} Z" fill="${T.bar}"/>`;
+  b += line(px + 1, py + 34.5, px + pw, py + 34.5, T.border);
+  [0, 1, 2].forEach((i) => (b += `<circle cx="${px + 20 + i * 15}" cy="${py + 18}" r="4.5" fill="${T.dim}"/>`));
+  b += mono(px + pw / 2 + 12, py + 22, 'verified-evidence.log', 11, T.muted, 'text-anchor="middle"');
+
+  const rows = [
+    ['ci', T.mint, 'ai-code-review-agent', '690+ ✓'],
+    ['ci', T.mint, 'mcp-secure-db', '199 ✓'],
+    ['ci', T.mint, 'finsight', '90 ✓'],
+    ['bench', T.sky, 'sql-ast-gate p50', '0.334ms'],
+    ['eval', T.violet, 'rbac filter leaks', '0 / 6 roles'],
+    ['eval', T.violet, 'ragas relevancy', '0.894'],
+  ];
+  const lx = px + 20, rx = px + pw - 20;
+  rows.forEach(([tag, col, label, val], i) => {
+    const y = py + 66 + i * 28;
+    b += mono(lx, y, tag.padEnd(5, ' '), 11.5, col, 'xml:space="preserve" font-weight="600"');
+    const labelX = lx + 52;
+    b += mono(labelX, y, label, 11.5, T.fg);
+    const labelEnd = labelX + label.length * 6.95 + 8;
+    const valStart = rx - val.length * 6.95 - 8;
+    if (valStart > labelEnd) b += line(labelEnd, y - 3.5, valStart, y - 3.5, T.dim, 1, 'stroke-dasharray="1.5 4"');
+    b += mono(rx, y, val, 11.5, val.includes('✓') ? T.mint : T.fg, 'text-anchor="end" font-weight="600"');
+  });
+  const sy = py + 66 + rows.length * 28 - 10;
+  b += line(lx, sy, rx, sy, T.border);
+  b += mono(lx, sy + 26, '❯', 11.5, T.mint, 'font-weight="700"');
+  b += mono(lx + 16, sy + 26, 'all public checks green', 11.5, T.muted);
+  b += `<rect class="cur" x="${lx + 16 + 23 * 6.95 + 4}" y="${sy + 16}" width="7" height="13" fill="${T.mint}"/>`;
+
   b += `</g>`;
 
   save(
@@ -133,124 +146,127 @@ for (const light of [false, true]) {
   );
 }
 
-// 2. Four Flagship Project Cards (960 x 214)
+// ─────────────────────────────────────────────────────────────
+// 2. Flagship project cards (960 × 214)
+// ─────────────────────────────────────────────────────────────
 const projects = [
   {
     id: 'code-review',
     num: '01',
-    tag: 'PR ASSURANCE & MCP SERVER',
+    tag: 'PR ASSURANCE · MCP SERVER',
     title: 'AI Code Review Agent v3.0',
-    sub: 'Deterministic SAST/AST & 6-language Tree-sitter pre-scans before CrewAI.',
-    metrics: '690+ Pytest tests  ·  14/14 synthetic  ·  20/20 Flask PRs (3.72s)',
-    accent: '#34d399',
-    steps: [
-      ['01', 'SAST + Tree-sitter', '0 tokens'],
-      ['02', '3-Agent Crew + Reconciler', 'bounded'],
-      ['03', 'SARIF 2.1 + 8 MCP Tools', 'SQLite WAL'],
-    ],
+    sub: 'Zero-token static analysis gates a bounded multi-agent PR reviewer.',
+    accent: '#3ddc97',
+    metrics: [['690+', 'PYTEST TESTS'], ['18 / 0 / 0', 'TP · FP · FN'], ['3.72s', 'MEAN PR LATENCY']],
+    steps: [['SAST · AST · Tree-sitter', '0 tokens'], ['3-agent crew + reconciler', 'bounded'], ['SARIF 2.1 · 8 MCP tools', 'output']],
   },
   {
     id: 'mcp-secure-db',
     num: '02',
-    tag: 'HARDENED MCP SQL SECURITY',
+    tag: 'HARDENED MCP · SQL SECURITY',
     title: 'mcp-secure-db',
-    sub: '6-layer defense-in-depth SQL guardrails for AI agents over MCP (Node 24).',
-    metrics: '0.334ms AST p50  ·  Postgres 17 + SQLite worker  ·  199 tests',
-    accent: '#38bdf8',
-    steps: [
-      ['01', 'Default-Deny RBAC', 'wire filter'],
-      ['02', 'Local SQL AST Gate', '0.334ms'],
-      ['03', 'SQLite / PG17 + PII', '5s hard kill'],
-    ],
+    sub: 'Six fail-closed layers between AI agents and your SQL database.',
+    accent: '#58a6ff',
+    metrics: [['199', 'SECURITY TESTS'], ['0.334ms', 'AST GATE P50'], ['6', 'FAIL-CLOSED LAYERS']],
+    steps: [['Default-deny RBAC', 'wire filter'], ['Local SQL AST gate', '0.334ms'], ['Sandbox + PII guard', '5s kill']],
   },
   {
     id: 'finsight',
     num: '03',
-    tag: 'ENTERPRISE RAG + TEXT-TO-SQL (FYP)',
+    tag: 'ENTERPRISE RAG · TEXT-TO-SQL',
     title: 'FinSight',
-    sub: '3-layer pre-retrieval RBAC workspace combining hybrid RRF & DuckDB sandbox.',
-    metrics: '0.933 RBAC (0 leaks)  ·  <20ms Redis  ·  0.894 RAGAS  ·  90 tests',
+    sub: 'Hybrid RAG + text-to-SQL with RBAC enforced before retrieval.',
     accent: '#2dd4bf',
-    steps: [
-      ['01', '3-Layer RBAC Gate', '6 roles'],
-      ['02', 'Chroma + FTS5 + Cohere', 'hybrid RRF'],
-      ['03', 'DuckDB + Redis Stream', '<20ms hit'],
-    ],
+    metrics: [['90', 'TESTS · 20 OWASP'], ['0', 'RBAC FILTER LEAKS'], ['<20ms', 'CACHE HIT']],
+    steps: [['3-layer RBAC gate', '6 roles'], ['Hybrid retrieval', 'RRF + rerank'], ['DuckDB sandbox', 'SELECT-only']],
   },
   {
     id: 'factscope',
     num: '04',
-    tag: 'OSINT NEWSROOM & BROADCAST AI',
+    tag: 'OSINT NEWSROOM · BROADCAST AI',
     title: 'Factscope-AI',
-    sub: '4-workspace verification workstation, Script Auditor & Live TV OBS Chyron.',
-    metrics: 'IFCN ClaimReview  ·  120+ OSINT registry  ·  1080p OBS  ·  3-tier failover',
-    accent: '#a78bfa',
-    steps: [
-      ['01', 'ClaimReview + SSRF', '120+ sites'],
-      ['02', 'Script Auditor', '0-100 score'],
-      ['03', '1080p OBS Chyron', 'Electron 36'],
-    ],
+    sub: 'Newsroom fact-checking suite with a live TV broadcast engine.',
+    accent: '#b392f0',
+    metrics: [['4', 'WORKSPACES'], ['3-tier', 'GEMINI FAILOVER'], ['120+', 'DOMAIN REGISTRY']],
+    steps: [['ClaimReview + SSRF shield', '120+ sites'], ['Script compliance audit', '0–100'], ['1080p broadcast overlay', 'OBS / vMix']],
   },
 ];
 
 for (const p of projects) {
+  const W = 960, H = 214;
   let b = `<defs>
-    <radialGradient id="g_${p.id}" cx="85%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="${p.accent}" stop-opacity="0.13"/>
-      <stop offset="100%" stop-color="${p.accent}" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-  <style>.mono { font-family: 'Cascadia Code', Consolas, 'SFMono-Regular', Menlo, monospace; }</style>`;
+    <linearGradient id="t_${p.id}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${p.accent}" stop-opacity="0"/><stop offset="0.25" stop-color="${p.accent}"/><stop offset="1" stop-color="${p.accent}" stop-opacity="0"/></linearGradient>
+    <radialGradient id="g_${p.id}" cx="80%" cy="50%" r="50%"><stop offset="0" stop-color="${p.accent}" stop-opacity="0.08"/><stop offset="1" stop-color="${p.accent}" stop-opacity="0"/></radialGradient>
+    <pattern id="d_${p.id}" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.9" fill="#222b36"/></pattern>
+    <clipPath id="c_${p.id}"><rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="11"/></clipPath>
+    <marker id="a_${p.id}" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L4 6 L7 1" fill="none" stroke="${p.accent}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  </defs>`;
 
-  b += rect(0.5, 0.5, 959, 213, '#070b14', '#1e293b', 14);
-  b += `<clipPath id="c_${p.id}"><rect x="1" y="1" width="958" height="212" rx="13"/></clipPath>`;
+  b += rect(0.5, 0.5, W - 1, H - 1, '#0a0d12', '#1f2630', 12);
   b += `<g clip-path="url(#c_${p.id})">`;
-  b += rect(0, 0, 960, 214, `url(#g_${p.id})`, 'none', 0);
-  b += rect(0, 0, 6, 214, p.accent, 'none', 0);
+  b += `<rect x="580" width="380" height="${H}" fill="url(#d_${p.id})" opacity="0.9"/>`;
+  b += `<rect width="${W}" height="${H}" fill="url(#g_${p.id})"/>`;
+  b += `<rect width="${W}" height="1.5" fill="url(#t_${p.id})"/>`;
 
-  // Left copy column
-  b += text(32, 38, `${p.num} / ${p.tag}`, 12, p.accent, 'class="mono" font-weight="700" letter-spacing="1.4"');
-  b += text(32, 84, p.title, 33, '#f8fafc', 'font-weight="800" letter-spacing="-0.9"');
-  b += text(32, 116, p.sub, 15, '#cbd5e1', 'font-weight="400"');
+  // Header row
+  b += mono(36, 42, `${p.num}`, 11.5, p.accent, 'font-weight="700" letter-spacing="1.2"');
+  b += line(60, 38, 76, 38, '#2a3441');
+  b += mono(86, 42, p.tag, 11.5, '#8b96a3', 'font-weight="500" letter-spacing="1.6"');
+  b += mono(556, 42, 'VIEW REPO ↗', 10.5, '#6e7781', 'text-anchor="end" letter-spacing="1.3"');
 
-  // Metric proof bar
-  b += rect(32, 134, 548, 28, '#0d1628', '#1e293b', 7);
-  b += text(44, 152, p.metrics, 11.2, p.accent, 'class="mono" font-weight="600"');
+  b += text(36, 84, p.title, 30, '#f0f3f6', 'font-weight="700" letter-spacing="-0.9"');
+  b += text(36, 112, p.sub, 15, '#9da7b3');
 
-  // Bottom CTA
-  b += text(32, 192, 'INSPECT REPOSITORY & ARCHITECTURE  ↗', 11.5, '#94a3b8', 'class="mono" font-weight="700" letter-spacing="1.1"');
+  b += line(36, 134, 556, 134, '#1f2630');
 
-  // Right implemented 3-step pipeline panel
-  b += rect(604, 20, 332, 174, '#0c1424', '#1e293b', 12);
-  b += `<line x1="630" y1="54" x2="630" y2="160" stroke="${p.accent}" stroke-width="1.5" stroke-opacity="0.45"/>`;
+  p.metrics.forEach(([n, l], i) => {
+    const x = 36 + i * 178;
+    if (i > 0) b += line(x - 18, 150, x - 18, 192, '#1f2630');
+    b += text(x, 172, n, 22, '#f0f3f6', 'font-weight="600" letter-spacing="-0.6"');
+    b += mono(x, 192, l, 10, '#6e7781', 'letter-spacing="1.3"');
+  });
 
-  p.steps.forEach(([sn, stitle, smeta], idx) => {
-    const sy = 32 + idx * 52;
-    b += rect(618, sy, 304, 42, '#111d33', '#23354f', 8);
-    b += rect(627, sy + 10, 24, 22, p.accent, 'none', 5);
-    b += text(639, sy + 25, sn, 10.5, '#051411', 'class="mono" font-weight="700" text-anchor="middle"');
-    b += text(660, sy + 25, stitle, 12, '#f8fafc', 'font-weight="700"');
-    b += text(912, sy + 25, smeta, 10.5, p.accent, 'class="mono" font-weight="600" text-anchor="end"');
+  // Right: schematic pipeline
+  const nx = 608, nw = 316, nh = 36;
+  b += mono(nx, 36, 'PIPELINE', 10, '#6e7781', 'letter-spacing="1.6"');
+  b += line(nx + 66, 32.5, nx + nw, 32.5, '#1f2630');
+  p.steps.forEach(([title, meta], i) => {
+    const y = 50 + i * 54;
+    b += rect(nx + 0.5, y + 0.5, nw, nh, '#0f141b', i === 0 ? p.accent : '#2a3441', 7, i === 0 ? 'stroke-opacity="0.55"' : '');
+    b += mono(nx + 16, y + 23, `0${i + 1}`, 10.5, i === 0 ? p.accent : '#6e7781', 'font-weight="600"');
+    b += line(nx + 40, y + 10, nx + 40, y + 26, '#2a3441');
+    b += text(nx + 52, y + 23, title, 13, '#e6edf3', 'font-weight="600"');
+    b += mono(nx + nw - 16, y + 23, meta, 10.5, p.accent, 'text-anchor="end" font-weight="500"');
+    if (i < p.steps.length - 1) {
+      const ay = y + nh + 1;
+      b += line(nx + 28, ay, nx + 28, ay + 14, p.accent, 1.2, 'stroke-opacity="0.5"');
+      b += `<path d="M${nx + 24} ${ay + 10} L${nx + 28} ${ay + 15} L${nx + 32} ${ay + 10}" fill="none" stroke="${p.accent}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>`;
+    }
   });
 
   b += `</g>`;
-  save(p.id, svg(960, 214, `${p.title} — ${p.sub}`, b));
+  save(p.id, svg(W, H, `${p.title} — ${p.sub}`, b));
 }
 
-// 3. Four Unified Action Buttons (196 x 42)
+// ─────────────────────────────────────────────────────────────
+// 3. Action buttons (196 × 42)
+// ─────────────────────────────────────────────────────────────
 const buttons = [
-  ['portfolio', 'PORTFOLIO & LAB ↗', '#34d399', '#051411', '#34d399'],
-  ['resume', 'READ RESUME ↗', '#0d1628', '#f8fafc', '#334155'],
-  ['linkedin', 'LINKEDIN ↗', '#0d1628', '#f8fafc', '#334155'],
-  ['contact', 'EMAIL ME ↗', '#0d1628', '#f8fafc', '#334155'],
+  ['portfolio', 'Portfolio & Lab', '↗', true],
+  ['resume', 'Resume', '↓', false],
+  ['linkedin', 'LinkedIn', '↗', false],
+  ['contact', 'Email me', '→', false],
 ];
 
-for (const [id, label, bg, fg, stroke] of buttons) {
+for (const [id, label, icon, primary] of buttons) {
+  const bg = primary ? '#3ddc97' : '#0d1117';
+  const fg = primary ? '#04140c' : '#e6edf3';
+  const stroke = primary ? '#3ddc97' : '#30363d';
   const b =
-    `<style>.mono { font-family: 'Cascadia Code', Consolas, 'SFMono-Regular', Menlo, monospace; }</style>` +
-    rect(1, 1, 194, 40, bg, stroke, 9) +
-    text(98, 26, label, 12.5, fg, 'class="mono" text-anchor="middle" font-weight="700" letter-spacing="0.6"');
-  save(id, svg(196, 42, label, b));
+    rect(1, 1, 194, 40, bg, stroke, 8) +
+    (primary ? '' : `<rect x="1" y="1" width="194" height="1" fill="#ffffff" opacity="0.04"/>`) +
+    `<text x="98" y="26.5" fill="${fg}" font-size="14" text-anchor="middle" font-weight="600" letter-spacing="-0.1" xml:space="preserve">${esc(label)}  <tspan fill="${primary ? fg : '#8b949e'}">${icon}</tspan></text>`;
+  save(id, svg(196, 42, `${label}`, b));
 }
 
-console.log('Generated 10 unified Obsidian+Mint SVG assets in assets/.');
+console.log('Generated 10 SVG assets in assets/.');

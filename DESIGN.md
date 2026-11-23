@@ -1,12 +1,15 @@
 # Profile Design Notes
 
-This GitHub profile serves as a **senior technical audit trail** unified with Hamza Ali's interactive portfolio (`personalportfolio-theta-gules-56.vercel.app`) and LinkedIn presence (`linkedin.com/in/hamza-ali-ai/`).
+This GitHub profile is unified with Hamza Ali's interactive portfolio (`personalportfolio-theta-gules-56.vercel.app`) and LinkedIn presence (`linkedin.com/in/hamza-ali-ai/`).
 
-## Visual & Editorial Standards
+## Visual System
 
-- **Palette:** Obsidian slate (`#070b14` / `#0d1628`) with emerald-mint (`#34d399`) and system-specific accents (`#38bdf8`, `#2dd4bf`, `#a78bfa`) in dark mode; crisp editorial slate-white (`#f8fafc` / `#059669`) in light mode via `<picture>` + `prefers-color-scheme`.
-- **Zero-dependency assets:** All 10 SVGs (`hero-dark.svg`, `hero-light.svg`, `portfolio.svg`, `resume.svg`, `linkedin.svg`, `contact.svg`, `code-review.svg`, `mcp-secure-db.svg`, `finsight.svg`, `factscope.svg`) are generated deterministically by `generate-assets.mjs` with zero third-party packages, zero JavaScript, zero external fonts, and zero tracking requests. The subtle pipeline signal animation respects `prefers-reduced-motion`.
-- **Implemented-only documentation:** Every Mermaid diagram and metric in `README.md` reflects verified, implemented repository behavior—never unimplemented design concepts. Limitations and benchmark scopes are explicitly disclosed alongside quantitative results.
+- **Direction:** Restrained, engineering-grade aesthetic (think developer-tool landing pages): hairline borders, 8–12px radii, dot-grid texture, a single accent per surface, semibold (600–700) type instead of heavy display weights.
+- **Palette:** GitHub-native darks (`#0a0d12` / `#0d1117`, borders `#1f2630`) with mint `#3ddc97` and blue `#58a6ff`; per-project accents (`#3ddc97`, `#58a6ff`, `#2dd4bf`, `#b392f0`). Light hero uses `#ffffff` / `#f4f7f9` with `#0a8f5a` / `#0969da`, served via `<picture>` + `prefers-color-scheme`.
+- **Hero:** Headline + stat row on the left; a terminal-style `verified-evidence.log` panel on the right listing real, linked metrics. The only motion is a blinking cursor, disabled under `prefers-reduced-motion`.
+- **Project cards:** Index + category label, title, one-line value statement, three metric columns, and a 3-step schematic pipeline.
+- **Zero-dependency assets:** All 10 SVGs are generated deterministically by `generate-assets.mjs` — no packages, no scripts, no external fonts, no tracking requests.
+- **Implemented-only documentation:** Every metric in the SVGs and `README.md` reflects verified repository behavior, with limitations disclosed alongside results.
 
 ## Regenerating Assets
 
