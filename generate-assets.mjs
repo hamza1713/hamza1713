@@ -127,7 +127,7 @@ for (const light of [false, true]) {
     svg(
       960,
       360,
-      'Hamza Ali — Full-Stack & Forward-Deployed AI Engineer. AI systems that prove their answers: Fail-Closed Agents, Zero-Leak RBAC RAG, and Hardened MCP Servers.',
+      'Hamza Ali — Full-Stack AI & LLM Systems Engineer. Production AI systems that prove their answers: Multi-Agent Workflows, Enterprise RAG & Text-to-SQL, and Secure MCP Servers.',
       b
     )
   );
